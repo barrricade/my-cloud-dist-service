@@ -129,7 +129,7 @@ env = "localhost"
     # 文档描述
     desc = "Using pink-lady to develop gin app on fly."
     # 请求地址，端口要和 server.addr 一致，浏览器访问时需要区分 127.0.0.1 和 localhost
-    host = "localhost:4869"
+    host = "39.99.41.162:4869"
     # 请求地址的 basepath
     basepath = "/"
     # 支持的请求 schemes

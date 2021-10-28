@@ -53,7 +53,7 @@ func Register(httpHandler http.Handler) {
 	docs.SwaggerInfo.Schemes = viper.GetStringSlice("apidocs.schemes")
 
 	// Group x 默认 url 路由
-	x := app.Group("/x", webserver.GinBasicAuth())
+	x := app.Group("/cloud", webserver.GinBasicAuth())
 	{
 		if viper.GetBool("server.pprof") {
 			pprof.RouteRegister(x, "/pprof")
