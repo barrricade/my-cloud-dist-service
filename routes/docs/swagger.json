@@ -4,16 +4,42 @@
         "contact": {}
     },
     "paths": {
-        "/x/ping": {
-            "get": {
-                "security": [
+        "/cloud/add_user": {
+            "post": {
+                "description": "添加用户",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "默认的 user 接口",
+                "parameters": [
                     {
-                        "ApiKeyAuth": []
-                    },
-                    {
-                        "BasicAuth": []
+                        "description": "id",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/ping": {
+            "get": {
                 "description": "返回 server 相关信息，可以用于健康检查",
                 "consumes": [
                     "application/json"
@@ -22,7 +48,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "x"
+                    "ping"
                 ],
                 "summary": "默认的 Ping 接口",
                 "parameters": [
@@ -45,15 +71,36 @@
         }
     },
     "definitions": {
+        "models.User": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "red wine No14"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "response.Response": {
             "type": "object",
             "properties": {
-                "code": {
-                    "type": "object"
-                },
-                "data": {
-                    "type": "object"
-                },
+                "code": {},
+                "data": {},
                 "msg": {
                     "type": "string"
                 }

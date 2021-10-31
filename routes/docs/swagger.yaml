@@ -1,17 +1,54 @@
 definitions:
+  models.User:
+    properties:
+      account_id:
+        example: 1
+        type: integer
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: integer
+      name:
+        example: red wine No14
+        type: string
+      updated_at:
+        type: string
+    type: object
   response.Response:
     properties:
-      code:
-        type: object
-      data:
-        type: object
+      code: {}
+      data: {}
       msg:
         type: string
     type: object
 info:
   contact: {}
 paths:
-  /x/ping:
+  /cloud/add_user:
+    post:
+      consumes:
+      - application/json
+      description: 添加用户
+      parameters:
+      - description: id
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 默认的 user 接口
+      tags:
+      - User
+  /ping:
     get:
       consumes:
       - application/json
@@ -28,10 +65,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/response.Response'
-      security:
-      - ApiKeyAuth: []
-      - BasicAuth: []
       summary: 默认的 Ping 接口
       tags:
-      - x
+      - ping
 swagger: "2.0"

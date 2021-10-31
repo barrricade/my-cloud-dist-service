@@ -80,7 +80,7 @@ go get -u github.com/swaggo/swag/cmd/swag
 swag init --dir ./ --generalInfo routes/routes.go --propertyStrategy snakecase --output ./routes/docs
 ```
 
-api 文档地址： <http://localhost:4869/x/apidocs/index.html>
+api 文档地址： <http://localhost:4869/apidocs/index.html>
 
 服务启动时如果环境变量设置了 `DISABLE_GIN_SWAGGER` 会关闭 api 文档。
 首次访问需经过 Basic 认证登录，登录账号密码可通过配置修改，默认为 `admin` `admin`

@@ -9,14 +9,14 @@
 ########## 部署环境标志
 # 该值关联影响其他配置，如数据库， redis 等涉及不同环境的配置
 # 如 配置为 localhost ， 使用 goutils 获取 mysql 相关实例时将使用 [mysql.localhost] 的配置
-env = "localhost"
+env = "sqlite"
 
 
 
 ########## server 相关配置
 [server]
     # server 运行地址，支持 HTTP 端口 ":port" 或 UNIX Socket "unix:/file"
-    addr = ":4869"
+    addr = ":8000"
     # gin mode ，可选值： debug 、 test 、 release
     mode = "debug"
     # 开启 pprof
@@ -129,7 +129,7 @@ env = "localhost"
     # 文档描述
     desc = "Using pink-lady to develop gin app on fly."
     # 请求地址，端口要和 server.addr 一致，浏览器访问时需要区分 127.0.0.1 和 localhost
-    host = "39.99.41.162:4869"
+    host = "localhost:8000"
     # 请求地址的 basepath
     basepath = "/"
     # 支持的请求 schemes
@@ -175,8 +175,10 @@ env = "localhost"
 
     # sqlite3 dev 环境
     [sqlite3.dev]
-        dbname = "sqlite3.dev.db"
+        dbname = "/mnt/sqliteDB/cloud.db"
         log_mode = false
+        max_idle_conns = 10
+        max_open_conns = 10
 
 
 
