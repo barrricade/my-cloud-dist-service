@@ -20,6 +20,7 @@ RUN echo "deb http://mirrors.aliyun.com/debian/ bullseye main non-free contrib \
             deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free \n\
     " > /etc/apt/sources.list &&\
     apt-get update && apt-get upgrade -y  &&\
+    apt-get install sqlite3 -y &&\
     if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
 
 # [Optional] Uncomment this section to install additional OS packages.

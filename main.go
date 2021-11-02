@@ -6,6 +6,7 @@ import (
 	"flag"
 
 	"github.com/axiaoxin-com/logging"
+	"github.com/axiaoxin-com/pink-lady/models"
 	"github.com/axiaoxin-com/pink-lady/routes"
 	"github.com/axiaoxin-com/pink-lady/routes/response"
 	"github.com/axiaoxin-com/pink-lady/services"
@@ -28,6 +29,10 @@ func DefaultGinMiddlewares() []gin.HandlerFunc {
 		m = append(m, webserver.GinRatelimitMiddleware())
 	}
 	return m
+}
+
+func init() {
+	services.DB().AutoMigrate(&models.User{}, &models.File{}, &models.FileAddress{})
 }
 
 func main() {

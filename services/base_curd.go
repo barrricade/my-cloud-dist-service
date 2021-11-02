@@ -1,27 +1,24 @@
 package services
 
-import (
-	"github.com/gin-gonic/gin"
-)
-
-// type RepoBase struct {
-// 	// nothing
-// }
-type curd interface {
-	add() map[string]string
-	update() map[string]string
-	delete() map[string]string
-	query() map[string]string
+type RepoBase struct {
+	// nothing
 }
+
+// type curd interface {
+// 	add() map[string]string
+// 	update() map[string]string
+// 	delete() map[string]string
+// 	query() map[string]string
+// }
 
 // 公共的增删改查服务
-func add(ctx gin.Context, model struct{}) {
-
-	ctx.BindJSON(&model)
-	// err,_ := DB().Create(&model)
-	// c.BindJSON(&person)
-	DB().Create(&model)
-}
+// func add(ctx gin.Context, model map[string]interface) {
+// 	var m model
+// 	ctx.BindJSON(&m)
+// 	// err,_ := DB().Create(&model)
+// 	// c.BindJSON(&person)
+// 	DB().Create(&m)
+// }
 
 // func GetProjects(c *gin.Context) {
 // 	var people []Person
