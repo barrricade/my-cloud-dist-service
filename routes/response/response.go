@@ -22,8 +22,8 @@ func JSON(c *gin.Context, data interface{}) {
 }
 
 // ErrJSON 返回 HTTP 状态码为 200 的统一失败结构
-func ErrJSON(c *gin.Context, err error, extraMsgs ...interface{}) {
-	Respond(c, http.StatusOK, nil, err, extraMsgs...)
+func ErrJSON(c *gin.Context, data interface{}, err error, extraMsgs ...interface{}) {
+	Respond(c, http.StatusOK, data, err, extraMsgs...)
 }
 
 // Respond encapsulates c.JSON
