@@ -4,10 +4,12 @@ package routes
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/axiaoxin-com/pink-lady/models"
 	"github.com/axiaoxin-com/pink-lady/routes/response"
 	"github.com/axiaoxin-com/pink-lady/services"
+	"github.com/axiaoxin-com/pink-lady/webserver"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -40,6 +42,16 @@ func add_user(c *gin.Context) {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 8)
 	user.Password = string(hashedPassword)
 	services.DB().Create(&user)
-	response.JSON(c, "创建成功")
+	token, err := webserver.GenToken(user)
+	if err != nil {
+		response.ErrJSON(c, nil, err)
+		return
+	}
+	responseUser := map[string]interface{}{
+		"user":  &user,
+		"token": token,
+	}
+	fmt.Println(token)
+	response.JSON(c, &responseUser)
 	return
 }

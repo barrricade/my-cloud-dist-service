@@ -194,6 +194,7 @@ func CaptchaVerify(c *gin.Context, code string) bool {
 		return false
 	}
 }
+
 func Serve(w http.ResponseWriter, r *http.Request, id, ext, lang string, download bool, width, height int) error {
 	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 	w.Header().Set("Pragma", "no-cache")

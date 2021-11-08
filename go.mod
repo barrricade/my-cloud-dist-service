@@ -6,6 +6,7 @@ require (
 	github.com/axiaoxin-com/goutils v1.0.17
 	github.com/axiaoxin-com/logging v1.2.10
 	github.com/axiaoxin-com/ratelimiter v1.0.3
+	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
 	github.com/dchest/captcha v0.0.0-20200903113550-03f5f0333e1f
 	github.com/denisenkom/go-mssqldb v0.10.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.9
@@ -36,8 +37,8 @@ require (
 	go.uber.org/atomic v1.8.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
 	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e
-	golang.org/x/net v0.0.0-20211029224645-99673261e6eb // indirect
-	golang.org/x/sys v0.0.0-20211029165221-6e7872819dc8 // indirect
+	golang.org/x/net v0.0.0-20211105192438-b53810dc28af // indirect
+	golang.org/x/sys v0.0.0-20211107104306-e0b2ad06fe42 // indirect
 	golang.org/x/time v0.0.0-20210611083556-38a9dc6acbc6 // indirect
 	golang.org/x/tools v0.1.7 // indirect
 	gorm.io/driver/mysql v1.1.0 // indirect

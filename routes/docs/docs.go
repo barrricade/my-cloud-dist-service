@@ -67,7 +67,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Captcha"
+                    "Login"
                 ],
                 "summary": "默认的 captcha 接口",
                 "parameters": [

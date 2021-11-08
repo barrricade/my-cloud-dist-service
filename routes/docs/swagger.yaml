@@ -110,7 +110,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 默认的 captcha 接口
       tags:
-      - Captcha
+      - Login
   /cloud/login:
     post:
       consumes:

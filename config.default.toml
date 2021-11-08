@@ -175,7 +175,7 @@ env = "sqlite"
 
     # sqlite3 dev 环境
     [sqlite3.dev]
-        dbname = "/mnt/sqliteDB/cloud.db"
+        dbname = "/workspaces/my-cloud-dist-service/cloud.db"
         log_mode = false
         max_idle_conns = 10
         max_open_conns = 10

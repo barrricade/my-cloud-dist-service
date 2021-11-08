@@ -17,9 +17,9 @@ func DB() *gorm.DB {
 	dbname := viper.GetString("sqlite3.dev.dbname")
 	MaxIdleConns := viper.GetString("sqlite3.dev.max_idle_conns")
 	MaxOpenConns := viper.GetString("sqlite3.dev.max_open_conns")
-	fmt.Println("what is conns", MaxIdleConns, MaxOpenConns)
+	fmt.Println("what is conns", MaxIdleConns, MaxOpenConns, dbname)
 	if dbname == "" {
-		dbname = "/mnt/sqliteDB/cloud.db"
+		dbname = "./cloud.db"
 	}
 	db, err := goutils.NewGormSQLite3(goutils.DBConfig{DBName: dbname, GormConfig: &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),

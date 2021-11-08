@@ -89,7 +89,10 @@ func Captcha(c *gin.Context, length ...int) {
 	}
 	captchaId := captcha.NewLen(l)
 	session := sessions.Default(c)
+	fmt.Println(l, w, h, "what is captchaid")
 	session.Set("captcha", captchaId)
 	_ = session.Save()
-	_ = webserver.Serve(c.Writer, c.Request, captchaId, ".png", "zh", false, w, h)
+	// _ = webserver.Serve(c.Writer, c.Request, captchaId, ".png", "zh", false, w, h)
+	response.JSON(c, "ch")
+	return
 }

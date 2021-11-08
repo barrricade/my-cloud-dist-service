@@ -31,10 +31,6 @@ func DefaultGinMiddlewares() []gin.HandlerFunc {
 	return m
 }
 
-func init() {
-	services.DB().AutoMigrate(&models.User{}, &models.File{}, &models.FileAddress{})
-}
-
 func main() {
 	configFile := flag.String("c", "./config.default.toml", "name of config file without format suffix)")
 	flag.Parse()
@@ -48,6 +44,7 @@ func main() {
 	// 创建 gin app
 	middlewares := DefaultGinMiddlewares()
 	app := webserver.NewGinEngine(middlewares...)
+	services.DB().AutoMigrate(&models.User{}, &models.File{}, &models.FileAddress{})
 	// 注册路由
 	routes.Register(app)
 	// 运行服务
