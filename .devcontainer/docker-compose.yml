@@ -1,0 +1,8 @@
+version: "3.3"
+services:
+  cloud-disk:
+    container_name: cloud-disk
+    build: .
+    network_mode: host
+    volumes:
+      - D:\gospace\my-cloud-dist-service:/my-cloud-dist-service
