@@ -1,20 +1,49 @@
 definitions:
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
   models.User:
     properties:
-      account_id:
-        example: 1
-        type: integer
+      account:
+        example: q656141982
+        type: string
+      avatar:
+        type: string
       created_at:
         type: string
       deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        example: 77677@qq.com
         type: string
       id:
         type: integer
+      last_login:
+        example: "2021-10-11 20:11:22"
+        type: string
       name:
-        example: red wine No14
+        example: 晓晓
+        type: string
+      password:
+        example: w11111
+        type: string
+      phone:
+        example: "13730884444"
+        type: string
+      status:
         type: string
       updated_at:
         type: string
+    required:
+    - account
+    - name
+    - password
+    - phone
     type: object
   response.Response:
     properties:
@@ -22,6 +51,19 @@ definitions:
       data: {}
       msg:
         type: string
+    type: object
+  routes.login:
+    properties:
+      account:
+        type: string
+      captcha:
+        description: Captcha  string `form:"captcha" json:"captcha" binding:"required"`
+        type: string
+      password:
+        type: string
+    required:
+    - account
+    - password
     type: object
 info:
   contact: {}
@@ -32,7 +74,7 @@ paths:
       - application/json
       description: 添加用户
       parameters:
-      - description: id
+      - description: data
         in: body
         name: data
         required: true
@@ -48,6 +90,49 @@ paths:
       summary: 默认的 user 接口
       tags:
       - User
+  /cloud/captcha:
+    get:
+      consumes:
+      - application/json
+      description: 用户登录接口
+      parameters:
+      - description: data
+        in: path
+        name: v
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 默认的 captcha 接口
+      tags:
+      - Captcha
+  /cloud/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录接口
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/routes.login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 默认的 user 接口
+      tags:
+      - Login
   /ping:
     get:
       consumes:

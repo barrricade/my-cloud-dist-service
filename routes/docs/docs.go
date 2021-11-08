@@ -38,12 +38,78 @@ var doc = `{
                 "summary": "默认的 user 接口",
                 "parameters": [
                     {
-                        "description": "id",
+                        "description": "data",
                         "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/models.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/cloud/captcha": {
+            "get": {
+                "description": "用户登录接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Captcha"
+                ],
+                "summary": "默认的 captcha 接口",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "data",
+                        "name": "v",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/cloud/login": {
+            "post": {
+                "description": "用户登录接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Login"
+                ],
+                "summary": "默认的 user 接口",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.login"
                         }
                     }
                 ],
@@ -90,25 +156,65 @@ var doc = `{
         }
     },
     "definitions": {
-        "models.User": {
+        "gorm.DeletedAt": {
             "type": "object",
             "properties": {
-                "account_id": {
-                    "type": "integer",
-                    "example": 1
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "models.User": {
+            "type": "object",
+            "required": [
+                "account",
+                "name",
+                "password",
+                "phone"
+            ],
+            "properties": {
+                "account": {
+                    "type": "string",
+                    "example": "q656141982"
+                },
+                "avatar": {
+                    "type": "string"
                 },
                 "created_at": {
                     "type": "string"
                 },
                 "deleted_at": {
-                    "type": "string"
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "77677@qq.com"
                 },
                 "id": {
                     "type": "integer"
                 },
+                "last_login": {
+                    "type": "string",
+                    "example": "2021-10-11 20:11:22"
+                },
                 "name": {
                     "type": "string",
-                    "example": "red wine No14"
+                    "example": "晓晓"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "w11111"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "13730884444"
+                },
+                "status": {
+                    "type": "string"
                 },
                 "updated_at": {
                     "type": "string"
@@ -121,6 +227,25 @@ var doc = `{
                 "code": {},
                 "data": {},
                 "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "routes.login": {
+            "type": "object",
+            "required": [
+                "account",
+                "password"
+            ],
+            "properties": {
+                "account": {
+                    "type": "string"
+                },
+                "captcha": {
+                    "description": "Captcha  string ` + "`" + `form:\"captcha\" json:\"captcha\" binding:\"required\"` + "`" + `",
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }

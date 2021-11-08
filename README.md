@@ -77,7 +77,7 @@ go get -u github.com/swaggo/swag/cmd/swag
 在项目根目录中执行以下命令会在 `routes` 目录中生成 api 文档
 
 ```
-swag init --dir ./ --generalInfo routes/routes.go --propertyStrategy snakecase --output ./routes/docs
+swag init --dir ./ --generalInfo routes/routes.go --propertyStrategy snakecase --output ./routes/docs --parseInternal --parseDependency
 ```
 
 api 文档地址： <http://localhost:4869/apidocs/index.html>
