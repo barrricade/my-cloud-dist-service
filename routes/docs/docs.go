@@ -75,7 +75,7 @@ var doc = `{
                         "type": "number",
                         "description": "data",
                         "name": "v",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     }
                 ],

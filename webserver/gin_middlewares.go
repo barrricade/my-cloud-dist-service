@@ -162,24 +162,7 @@ func SessionConfig() sessions.Store {
 	})
 	return store
 }
-func Captcha(c *gin.Context, length ...int) {
-	l := captcha.DefaultLen
-	w, h := 107, 36
-	if len(length) == 1 {
-		l = length[0]
-	}
-	if len(length) == 2 {
-		w = length[1]
-	}
-	if len(length) == 3 {
-		h = length[2]
-	}
-	captchaId := captcha.NewLen(l)
-	session := sessions.Default(c)
-	session.Set("captcha", captchaId)
-	_ = session.Save()
-	_ = Serve(c.Writer, c.Request, captchaId, ".png", "zh", false, w, h)
-}
+
 func CaptchaVerify(c *gin.Context, code string) bool {
 	session := sessions.Default(c)
 	if captchaId := session.Get("captcha"); captchaId != nil {
@@ -194,11 +177,12 @@ func CaptchaVerify(c *gin.Context, code string) bool {
 		return false
 	}
 }
-
 func Serve(w http.ResponseWriter, r *http.Request, id, ext, lang string, download bool, width, height int) error {
 	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 	w.Header().Set("Pragma", "no-cache")
 	w.Header().Set("Expires", "0")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers")
 
 	var content bytes.Buffer
 	switch ext {

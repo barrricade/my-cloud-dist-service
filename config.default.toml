@@ -16,7 +16,7 @@ env = "sqlite"
 ########## server 相关配置
 [server]
     # server 运行地址，支持 HTTP 端口 ":port" 或 UNIX Socket "unix:/file"
-    addr = ":8000"
+    addr = ":3500"
     # gin mode ，可选值： debug 、 test 、 release
     mode = "debug"
     # 开启 pprof
@@ -129,7 +129,7 @@ env = "sqlite"
     # 文档描述
     desc = "Using pink-lady to develop gin app on fly."
     # 请求地址，端口要和 server.addr 一致，浏览器访问时需要区分 127.0.0.1 和 localhost
-    host = "localhost:8000"
+    host = "localhost:3500"
     # 请求地址的 basepath
     basepath = "/"
     # 支持的请求 schemes
@@ -175,7 +175,7 @@ env = "sqlite"
 
     # sqlite3 dev 环境
     [sqlite3.dev]
-        dbname = "/workspaces/my-cloud-dist-service/cloud.db"
+        dbname = "./cloud.db"
         log_mode = false
         max_idle_conns = 10
         max_open_conns = 10

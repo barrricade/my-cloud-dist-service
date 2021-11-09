@@ -1,149 +1,106 @@
 package main
 
 import (
-	"log"
+	"bytes"
 	"net/http"
-	"os"
 	"time"
 
-	jwt "github.com/appleboy/gin-jwt/v2"
+	"github.com/dchest/captcha"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
-type login struct {
-	Username string `form:"username" json:"username" binding:"required"`
-	Password string `form:"password" json:"password" binding:"required"`
+// 中间件，处理session
+func Session(keyPairs string) gin.HandlerFunc {
+	store := SessionConfig()
+	return sessions.Sessions(keyPairs, store)
 }
-
-var identityKey = "id"
-
-func helloHandler(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
-	user, _ := c.Get(identityKey)
-	c.JSON(200, gin.H{
-		"userID":   claims[identityKey],
-		"userName": user.(*User).UserName,
-		"text":     "Hello World.",
+func SessionConfig() sessions.Store {
+	sessionMaxAge := 3600
+	sessionSecret := "hanyun"
+	var store sessions.Store
+	store = cookie.NewStore([]byte(sessionSecret))
+	store.Options(sessions.Options{
+		MaxAge: sessionMaxAge, //seconds
+		Path:   "/",
 	})
+	return store
 }
 
-// User demo
-type User struct {
-	UserName  string
-	FirstName string
-	LastName  string
+func Captcha(c *gin.Context, length ...int) {
+	l := captcha.DefaultLen
+	w, h := 107, 36
+	if len(length) == 1 {
+		l = length[0]
+	}
+	if len(length) == 2 {
+		w = length[1]
+	}
+	if len(length) == 3 {
+		h = length[2]
+	}
+	captchaId := captcha.NewLen(l)
+	session := sessions.Default(c)
+	session.Set("captcha", captchaId)
+	_ = session.Save()
+	_ = Serve(c.Writer, c.Request, captchaId, ".png", "zh", false, w, h)
+}
+func CaptchaVerify(c *gin.Context, code string) bool {
+	session := sessions.Default(c)
+	if captchaId := session.Get("captcha"); captchaId != nil {
+		session.Delete("captcha")
+		_ = session.Save()
+		if captcha.VerifyString(captchaId.(string), code) {
+			return true
+		} else {
+			return false
+		}
+	} else {
+		return false
+	}
+}
+func Serve(w http.ResponseWriter, r *http.Request, id, ext, lang string, download bool, width, height int) error {
+	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+	w.Header().Set("Pragma", "no-cache")
+	w.Header().Set("Expires", "0")
+
+	var content bytes.Buffer
+	switch ext {
+	case ".png":
+		w.Header().Set("Content-Type", "image/png")
+		_ = captcha.WriteImage(&content, id, width, height)
+	case ".wav":
+		w.Header().Set("Content-Type", "audio/x-wav")
+		_ = captcha.WriteAudio(&content, id, lang)
+	default:
+		return captcha.ErrNotFound
+	}
+
+	if download {
+		w.Header().Set("Content-Type", "application/octet-stream")
+	}
+	http.ServeContent(w, r, id+ext, time.Time{}, bytes.NewReader(content.Bytes()))
+	return nil
 }
 
 func main() {
-	port := os.Getenv("PORT")
-	r := gin.New()
-	r.Use(gin.Logger())
-	r.Use(gin.Recovery())
-
-	if port == "" {
-		port = "8000"
-	}
-
-	// the jwt middleware
-	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
-		Realm:       "cloud-disk",
-		Key:         []byte("rHh]YY4Decs4xk}*88Fb"),
-		Timeout:     time.Hour,
-		MaxRefresh:  time.Hour,
-		IdentityKey: identityKey,
-		PayloadFunc: func(data interface{}) jwt.MapClaims {
-			if v, ok := data.(*User); ok {
-				return jwt.MapClaims{
-					identityKey: v.UserName,
-				}
-			}
-			return jwt.MapClaims{}
-		},
-		IdentityHandler: func(c *gin.Context) interface{} {
-			claims := jwt.ExtractClaims(c)
-			return &User{
-				UserName: claims[identityKey].(string),
-			}
-		},
-		Authenticator: func(c *gin.Context) (interface{}, error) {
-			var loginVals login
-			if err := c.ShouldBind(&loginVals); err != nil {
-				return "", jwt.ErrMissingLoginValues
-			}
-			userID := loginVals.Username
-			password := loginVals.Password
-
-			if (userID == "admin" && password == "admin") || (userID == "test" && password == "test") {
-				return &User{
-					UserName:  userID,
-					LastName:  "Bo-Yi",
-					FirstName: "Wu",
-				}, nil
-			}
-
-			return nil, jwt.ErrFailedAuthentication
-		},
-		Authorizator: func(data interface{}, c *gin.Context) bool {
-			if v, ok := data.(*User); ok && v.UserName == "admin" {
-				return true
-			}
-
-			return false
-		},
-		Unauthorized: func(c *gin.Context, code int, message string) {
-			c.JSON(code, gin.H{
-				"code":    code,
-				"message": message,
-			})
-		},
-		// TokenLookup is a string in the form of "<source>:<name>" that is used
-		// to extract token from the request.
-		// Optional. Default value "header:Authorization".
-		// Possible values:
-		// - "header:<name>"
-		// - "query:<name>"
-		// - "cookie:<name>"
-		// - "param:<name>"
-		TokenLookup: "header: Authorization, query: token, cookie: jwt",
-		// TokenLookup: "query:token",
-		// TokenLookup: "cookie:token",
-
-		// TokenHeadName is a string in the header. Default value is "Bearer"
-		TokenHeadName: "Bearer",
-
-		// TimeFunc provides the current time. You can override it to use another time value. This is useful for testing or if your server uses a different time zone than your tokens.
-		TimeFunc: time.Now,
+	router := gin.Default()
+	router.LoadHTMLGlob("./*.html")
+	router.Use(Session("hanyun"))
+	router.GET("/captcha", func(c *gin.Context) {
+		Captcha(c, 4)
 	})
-
-	if err != nil {
-		log.Fatal("JWT Error:" + err.Error())
-	}
-
-	// When you use jwt.New(), the function is already automatically called for checking,
-	// which means you don't need to call it again.
-	errInit := authMiddleware.MiddlewareInit()
-
-	if errInit != nil {
-		log.Fatal("authMiddleware.MiddlewareInit() Error:" + errInit.Error())
-	}
-
-	r.POST("/login", authMiddleware.LoginHandler)
-
-	r.NoRoute(authMiddleware.MiddlewareFunc(), func(c *gin.Context) {
-		claims := jwt.ExtractClaims(c)
-		log.Printf("NoRoute claims: %#v\n", claims)
-		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", nil)
 	})
-
-	auth := r.Group("/auth")
-	// Refresh time can be longer than token timeout
-	auth.GET("/refresh_token", authMiddleware.RefreshHandler)
-	auth.Use(authMiddleware.MiddlewareFunc())
-	{
-		auth.GET("/hello", helloHandler)
-	}
-
-	if err := http.ListenAndServe(":"+port, r); err != nil {
-		log.Fatal(err)
-	}
+	router.GET("/captcha/verify/:value", func(c *gin.Context) {
+		value := c.Param("value")
+		if CaptchaVerify(c, value) {
+			c.JSON(http.StatusOK, gin.H{"status": 0, "msg": "success"})
+		} else {
+			c.JSON(http.StatusOK, gin.H{"status": 1, "msg": "failed"})
+		}
+	})
+	router.Run(":8080")
 }

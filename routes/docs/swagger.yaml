@@ -97,7 +97,7 @@ paths:
       description: 用户登录接口
       parameters:
       - description: data
-        in: path
+        in: query
         name: v
         required: true
         type: number

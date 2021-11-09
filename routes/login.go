@@ -72,7 +72,7 @@ func user_login(c *gin.Context) {
 // @Tags Login
 // @Accept json
 // @Produce json
-// @param v path number true "data"
+// @param v query number true "data"
 // @Success 200 {object} response.Response
 // @Router /cloud/captcha [get]
 func Captcha(c *gin.Context, length ...int) {
@@ -89,10 +89,7 @@ func Captcha(c *gin.Context, length ...int) {
 	}
 	captchaId := captcha.NewLen(l)
 	session := sessions.Default(c)
-	fmt.Println(l, w, h, "what is captchaid")
 	session.Set("captcha", captchaId)
 	_ = session.Save()
-	// _ = webserver.Serve(c.Writer, c.Request, captchaId, ".png", "zh", false, w, h)
-	response.JSON(c, "ch")
-	return
+	_ = webserver.Serve(c.Writer, c.Request, captchaId, ".png", "zh", false, w, h)
 }
